@@ -21,7 +21,6 @@ import { useToast } from "@/hooks/use-toast";
 import AIWriter from "react-aiwriter";
 import { IAttachment } from "@/types";
 import { AudioRecorder } from "./audio-recorder";
-import { Badge } from "./ui/badge";
 import ScrollableProjects from "./ScrollableProjects";
 
 interface ExtraContentFields {
