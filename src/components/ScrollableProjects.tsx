@@ -18,7 +18,7 @@ const ScrollableProjects: React.FC<ScrollableProjectsProps> = ({
                 key={index}
                 className="bg-black px-4 py-2 rounded  text-white"
               >
-                {index + 1 + " "}
+                {index + 1 + ". "}
                 {project}
               </li>
             ))}

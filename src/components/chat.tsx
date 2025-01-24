@@ -168,7 +168,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
     <div className="flex flex-col w-full h-[calc(100dvh)] p-4 ">
       <div className="flex-1 overflow-y-auto">
         <ChatMessageList ref={messagesContainerRef}>
-          {transitions((styles, message) => {
+          {transitions((styles, message: any) => {
             const variant = getMessageVariant(message?.user);
             return (
               // @ts-expect-error
@@ -187,44 +187,33 @@ export default function Page({ agentId }: { agentId: UUID }) {
                       {message?.user !== "user" ? (
                         <>
                           <AIWriter>{message?.text}</AIWriter>
-                          <ScrollableProjects
-                            projects={[
-                              "lovle",
-                              "ashdsa",
-                              "lovle",
-                              "ashdsa",
-                              "lovle",
-                              "ashdsa",
-                              "lovle",
-                              "ashdsa",
-                              "lovle",
-                              "ashdsa",
-                              "lovle",
-                              "ashdsa",
-                              "lovle",
-                              "ashdsa",
-                            ]}
-                          />
+                          {message?.content?.projectNames && (
+                            <ScrollableProjects
+                              projects={message?.content?.projectNames}
+                            />
+                          )}
                         </>
                       ) : (
                         message?.text
                       )}
                       {/* Attachments */}
                       <div>
-                        {message?.attachments?.map((attachment, idx) => (
-                          <div className="flex flex-col gap-1 mt-2" key={idx}>
-                            <img
-                              src={attachment.url}
-                              width="100%"
-                              height="100%"
-                              className="w-64 rounded-md"
-                            />
-                            <div className="flex items-center justify-between gap-4">
-                              <span></span>
-                              <span></span>
+                        {message?.attachments?.map(
+                          (attachment: any, idx: any) => (
+                            <div className="flex flex-col gap-1 mt-2" key={idx}>
+                              <img
+                                src={attachment.url}
+                                width="100%"
+                                height="100%"
+                                className="w-64 rounded-md"
+                              />
+                              <div className="flex items-center justify-between gap-4">
+                                <span></span>
+                                <span></span>
+                              </div>
                             </div>
-                          </div>
-                        ))}
+                          )
+                        )}
                       </div>
                     </ChatBubbleMessage>
                     <div className="flex items-center gap-4 justify-between w-full mt-1">
