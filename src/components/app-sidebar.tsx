@@ -44,8 +44,7 @@ export function AppSidebar() {
                 />
 
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">ElizaOS</span>
-                  <span className="">v{info?.version}</span>
+                  <span className="font-semibold">Qacc Agent</span>
                 </div>
               </NavLink>
             </SidebarMenuButton>
@@ -91,17 +90,9 @@ export function AppSidebar() {
             <NavLink
               to="https://elizaos.github.io/eliza/docs/intro/"
               target="_blank"
-            >
-              <SidebarMenuButton>
-                <Book /> Documentation
-              </SidebarMenuButton>
-            </NavLink>
+            ></NavLink>
           </SidebarMenuItem>
-          <SidebarMenuItem>
-            <SidebarMenuButton disabled>
-              <Cog /> Settings
-            </SidebarMenuButton>
-          </SidebarMenuItem>
+          <SidebarMenuItem></SidebarMenuItem>
           <ConnectionStatus />
         </SidebarMenu>
       </SidebarFooter>
