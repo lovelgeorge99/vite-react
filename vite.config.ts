@@ -25,5 +25,5 @@ export default defineConfig({
       "@": "/src",
     },
   },
-  base: "/vite-react/",
+  base: "/",
 });
