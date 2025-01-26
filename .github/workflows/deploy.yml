@@ -29,6 +29,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
+      - name: Echo environment variable (before build)
+        run: echo "VITE_BASE_URL is $VITE_BASE_URL"
       - name: Build project
         run: pnpm run build
 
