@@ -35,12 +35,12 @@ export function AppSidebar() {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <NavLink to="/">
-                <img
+                {/* <img
                   src="/elizaos-icon.png"
                   width="100%"
                   height="100%"
                   className="size-7"
-                />
+                /> */}
 
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">Qacc Agent</span>

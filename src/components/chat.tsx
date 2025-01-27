@@ -186,9 +186,9 @@ export default function Page({ agentId }: { agentId: UUID }) {
                       {message?.user !== "user" ? (
                         <>
                           <AIWriter>{message?.text}</AIWriter>
-                          {message?.content?.projectNames && (
+                          {message?.content?.projects && (
                             <ScrollableProjects
-                              projects={message?.content?.projectNames}
+                              projects={message?.content?.projects}
                             />
                           )}
                         </>

@@ -7,24 +7,48 @@ interface ScrollableProjectsProps {
 const ScrollableProjects: React.FC<ScrollableProjectsProps> = ({
   projects,
 }) => {
+  const columns = projects.length > 0 ? Object.keys(projects[0]) : [];
+
   return (
-    <div className="w-full max-w-md mx-auto">
-      <h2 className="text-xl font-bold text-center mb-4">Project List</h2>
-      <div className="h-56 overflow-y-auto border border-gray-300 rounded-md p-4 shadow-md">
+    <div className="w-full max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold text-center mb-4">Project List</h2>
+      <div className="h-80 overflow-y-auto border border-gray-300 rounded-md p-4 shadow-md">
         {projects.length > 0 ? (
-          <ul className="space-y-2">
-            {projects.map((project, index) => (
-              <li
-                key={index}
-                className="bg-black px-4 py-2 rounded  text-white"
-              >
-                {index + 1 + ". "}
-                {project}
-              </li>
-            ))}
-          </ul>
+          <table className="table-auto w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-200">
+                {columns.map((column) => (
+                  <th
+                    key={column}
+                    className="border border-gray-300 px-4 py-2 text-left font-medium text-gray-700"
+                  >
+                    {column.replace(/_/g, " ").toUpperCase()}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {projects.map((project, rowIndex) => (
+                <tr
+                  key={rowIndex}
+                  className={`${
+                    rowIndex % 2 === 0 ? "bg-white" : "bg-gray-50"
+                  }`}
+                >
+                  {columns.map((column) => (
+                    <td
+                      key={column}
+                      className="border border-gray-300 px-4 py-2 text-gray-800"
+                    >
+                      {(project as any)[column]}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         ) : (
-          <p className="text-gray-500">No projects to display.</p>
+          <p className="text-gray-500 text-center">No projects to display.</p>
         )}
       </div>
     </div>
