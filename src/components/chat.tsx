@@ -23,6 +23,8 @@ import { IAttachment } from "@/types";
 import { AudioRecorder } from "./audio-recorder";
 import ScrollableProjects from "./ScrollableProjects";
 
+import ProjectComparisonTable from "./projectComparisions";
+
 interface ExtraContentFields {
   user: string;
   createdAt: number;
@@ -189,6 +191,13 @@ export default function Page({ agentId }: { agentId: UUID }) {
                           {message?.content?.projects && (
                             <ScrollableProjects
                               projects={message?.content?.projects}
+                            />
+                          )}
+                          {message?.content?.projectsCompared && (
+                            <ProjectComparisonTable
+                              projectsCompared={
+                                message?.content?.projectsCompared
+                              }
                             />
                           )}
                         </>

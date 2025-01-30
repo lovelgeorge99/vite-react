@@ -23,6 +23,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": "/src",
+      json2csv: "json2csv/dist/json2csv.umd.js",
     },
   },
   base: "/vite-react/",
