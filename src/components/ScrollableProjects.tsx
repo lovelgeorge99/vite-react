@@ -1,4 +1,5 @@
 import React from "react";
+import DownloadCSV from "./downloadCSV";
 
 interface ScrollableProjectsProps {
   projects: string[];
@@ -11,8 +12,12 @@ const ScrollableProjects: React.FC<ScrollableProjectsProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold text-center mb-4">Project List</h2>
-      <div className="h-80 overflow-y-auto border border-gray-300 rounded-md p-4 shadow-md">
+      <div className="flex justify-between">
+        <h2 className="text-2xl font-bold text-center mb-4">Project List</h2>
+        <DownloadCSV jsonData={projects} />
+      </div>
+
+      <div className="h-80 min-w-[800px] overflow-y-auto border border-gray-300 rounded-md p-4 shadow-md">
         {projects.length > 0 ? (
           <table className="table-auto w-full border-collapse border border-gray-300">
             <thead>
