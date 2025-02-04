@@ -149,7 +149,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file) {
       setSelectedFile(file);
     }
   };
@@ -314,7 +314,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
                     type="file"
                     ref={fileInputRef}
                     onChange={handleFileChange}
-                    accept="image/*"
+                    accept=".csv"
                     className="hidden"
                   />
                 </div>

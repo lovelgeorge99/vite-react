@@ -19,7 +19,7 @@ const queryClient = new QueryClient({
 });
 
 function App() {
-  useVersion();
+  // useVersion();
   return (
     <QueryClientProvider client={queryClient}>
       <div
