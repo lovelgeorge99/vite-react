@@ -23,10 +23,42 @@ const getMetricColor = (value: number) => {
   if (value >= 0.6) return "text-yellow-400";
   return "text-red-400";
 };
-export default function ProjectComparisonTable({ projectsCompared }: any) {
+export default function ProjectComparisonTable({
+  projectsCompared,
+  onSendMessage,
+}: {
+  projectsCompared: any;
+  onSendMessage: (message: string, projects: any[]) => void;
+}) {
   const [selectedComparison, setSelectedComparison] =
     useState<ProjectComparison | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedProjects, setSelectedProjects] = useState([]);
+
+  const handleCheckboxChange = (comparison: any) => {
+    // console.log(selectedProjects);
+    setSelectedProjects((prev: any) => {
+      const isSelected = prev.some(
+        (project: any) =>
+          project.project1 === comparison.project1 &&
+          project.project2 === comparison.project2
+      );
+
+      if (isSelected) {
+        return prev.filter(
+          (project: any) =>
+            !(
+              project.project1 === comparison.project1 &&
+              project.project2 === comparison.project2
+            )
+        );
+      } else {
+        return [...prev, comparison];
+      }
+    });
+    // console.log(selectedProjects);
+  };
+
   const comparisonsPerPage = 5;
 
   const totalPages = Math.ceil(projectsCompared.length / comparisonsPerPage);
@@ -53,10 +85,24 @@ export default function ProjectComparisonTable({ projectsCompared }: any) {
     }
   };
 
+  const handleSendSelected = () => {
+    if (selectedProjects.length === 0) return;
+
+    const projectNames = selectedProjects
+      .map((project: any) => `${project.selected_project}`)
+      .join(", ");
+
+    const message = `Please analyze these project comparisons: ${projectNames}`;
+    onSendMessage(message, selectedProjects);
+    setSelectedProjects([]); // Clear selection after sending
+  };
   return (
     <div className="container mx-auto p-4 bg-gray-900 text-gray-100 m-5 w-[950px]">
       <div className="flex justify-between">
         <h1 className="text-2xl font-bold mb-4">Project Comparisons</h1>{" "}
+        {selectedProjects.length > 0 && (
+          <button onClick={handleSendSelected}>Click</button>
+        )}
         <DownloadCSV jsonData={projectsCompared} />
       </div>
 
@@ -70,6 +116,7 @@ export default function ProjectComparisonTable({ projectsCompared }: any) {
               <th className="px-4 py-2 text-left">Selected Project</th>
               <th className="px-4 py-2 text-left">Confidence</th>
               <th className="px-4 py-2 text-left">Actions</th>
+              <th className="px-4 py-2 text-left">Select</th>
             </tr>
           </thead>
           <tbody>
@@ -97,6 +144,18 @@ export default function ProjectComparisonTable({ projectsCompared }: any) {
                   >
                     Details
                   </button>
+                </td>
+                <td className="px-4 py-2">
+                  <input
+                    type="checkbox"
+                    checked={selectedProjects.some(
+                      (project: any) =>
+                        project.project1 === comparison.project1 &&
+                        project.project2 === comparison.project2
+                    )}
+                    onChange={() => handleCheckboxChange(comparison)}
+                    className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
+                  />
                 </td>
               </tr>
             ))}

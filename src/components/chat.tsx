@@ -67,6 +67,36 @@ export default function Page({ agentId }: { agentId: UUID }) {
     }
   };
 
+  const handleProjectComparison = (
+    message: string,
+    selectedProjects: any[]
+  ) => {
+    // Create the message with attachments
+    const newMessages = [
+      {
+        text: message,
+        user: "user",
+        createdAt: Date.now(),
+        content: { selectedProjects },
+      },
+      {
+        text: message,
+        user: "system",
+        isLoading: true,
+        createdAt: Date.now(),
+      },
+    ];
+
+    queryClient.setQueryData(
+      ["messages", agentId],
+      (old: ContentWithUser[] = []) => [...old, ...newMessages]
+    );
+
+    sendMessageMutation.mutate({
+      message,
+    });
+  };
+
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input) return;
@@ -156,7 +186,6 @@ export default function Page({ agentId }: { agentId: UUID }) {
 
   const messages =
     queryClient.getQueryData<ContentWithUser[]>(["messages", agentId]) || [];
-  console.log(messages, "Messges");
 
   const transitions = useTransition(messages, {
     keys: (message) => `${message.createdAt}-${message.user}-${message.text}`,
@@ -198,6 +227,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
                               projectsCompared={
                                 message?.content?.projectsCompared
                               }
+                              onSendMessage={handleProjectComparison}
                             />
                           )}
                         </>
