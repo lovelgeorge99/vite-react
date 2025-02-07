@@ -67,6 +67,36 @@ export default function Page({ agentId }: { agentId: UUID }) {
     }
   };
 
+  const handleProjectComparison = (
+    message: string,
+    selectedProjects: any[]
+  ) => {
+    // Create the message with attachments
+    const newMessages = [
+      {
+        text: message,
+        user: "user",
+        createdAt: Date.now(),
+        content: { selectedProjects },
+      },
+      {
+        text: message,
+        user: "system",
+        isLoading: true,
+        createdAt: Date.now(),
+      },
+    ];
+
+    queryClient.setQueryData(
+      ["messages", agentId],
+      (old: ContentWithUser[] = []) => [...old, ...newMessages]
+    );
+
+    sendMessageMutation.mutate({
+      message,
+    });
+  };
+
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input) return;
@@ -149,14 +179,13 @@ export default function Page({ agentId }: { agentId: UUID }) {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith("image/")) {
+    if (file) {
       setSelectedFile(file);
     }
   };
 
   const messages =
     queryClient.getQueryData<ContentWithUser[]>(["messages", agentId]) || [];
-  console.log(messages, "Messges");
 
   const transitions = useTransition(messages, {
     keys: (message) => `${message.createdAt}-${message.user}-${message.text}`,
@@ -198,6 +227,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
                               projectsCompared={
                                 message?.content?.projectsCompared
                               }
+                              onSendMessage={handleProjectComparison}
                             />
                           )}
                         </>
@@ -314,7 +344,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
                     type="file"
                     ref={fileInputRef}
                     onChange={handleFileChange}
-                    accept="image/*"
+                    accept=".csv"
                     className="hidden"
                   />
                 </div>
