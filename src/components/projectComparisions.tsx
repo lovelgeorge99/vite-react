@@ -116,7 +116,7 @@ export default function ProjectComparisonTable({
               <th className="px-4 py-2 text-left">Selected Project</th>
               <th className="px-4 py-2 text-left">Confidence</th>
               <th className="px-4 py-2 text-left">Actions</th>
-              <th className="px-4 py-2 text-left">Select</th>
+              <th className="px-4 py-2 text-left">Agree with result?</th>
             </tr>
           </thead>
           <tbody>
