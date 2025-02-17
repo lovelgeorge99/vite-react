@@ -24,6 +24,7 @@ import { AudioRecorder } from "./audio-recorder";
 import ScrollableProjects from "./ScrollableProjects";
 
 import ProjectComparisonTable from "./projectComparisions";
+import { useScores } from "@/ScoreContext";
 
 interface ExtraContentFields {
   user: string;
@@ -43,6 +44,21 @@ export default function Page({ agentId }: { agentId: UUID }) {
   const formRef = useRef<HTMLFormElement>(null);
 
   const queryClient = useQueryClient();
+
+  const { scores } = useScores();
+  const initialScoresRef = useRef(scores);
+  const [hasSentData, setHasSentData] = useState(false);
+
+  useEffect(() => {
+    if (
+      !hasSentData &&
+      JSON.stringify(scores) !== JSON.stringify(initialScoresRef.current)
+    ) {
+      console.log("Send");
+      setHasSentData(true);
+    }
+  }, [scores]);
+  // console.log("Scores in Chat component:", scores.marketing);
 
   const getMessageVariant = (role: string) =>
     role !== "user" ? "received" : "sent";
@@ -74,7 +90,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
     // Create the message with attachments
     const newMessages = [
       {
-        text: message,
+        text: "Comparing the selected projects",
         user: "user",
         createdAt: Date.now(),
         content: { selectedProjects },
@@ -96,6 +112,18 @@ export default function Page({ agentId }: { agentId: UUID }) {
       message,
     });
   };
+
+  // const handleSendConfigs = () => {
+  //   sendMessageMutation.mutate({
+  //     message: `Can you  change the configs
+  //     Marketing:${scores.marketing}
+  //     Product:${scores.product}
+  //     Team:${scores.teamAssessment}
+  //     Financial:${scores.financial}
+  //     Also do not repond with any text to me
+  //     `,
+  //   });
+  // };
 
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
