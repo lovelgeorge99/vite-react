@@ -33,30 +33,35 @@ export default function ProjectComparisonTable({
   const [selectedComparison, setSelectedComparison] =
     useState<ProjectComparison | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedProjects, setSelectedProjects] = useState([]);
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+
+  console.log(projectsCompared);
+
+  const finalArray = projectsCompared.map((comparison: any) => {
+    if (selectedProjects.includes(comparison.selected_project)) {
+      return comparison.selected_project;
+    } else {
+      return comparison.not_selected_project;
+    }
+  });
+
+  console.log("Final Array", finalArray);
 
   const handleCheckboxChange = (comparison: any) => {
     // console.log(selectedProjects);
     setSelectedProjects((prev: any) => {
-      const isSelected = prev.some(
-        (project: any) =>
-          project.project1 === comparison.project1 &&
-          project.project2 === comparison.project2
-      );
+      const isSelected = prev.includes(comparison.selected_project);
 
       if (isSelected) {
+        // Remove the selected project if it is already in the list
         return prev.filter(
-          (project: any) =>
-            !(
-              project.project1 === comparison.project1 &&
-              project.project2 === comparison.project2
-            )
+          (project: any) => project !== comparison.selected_project
         );
       } else {
-        return [...prev, comparison];
+        // Add the selected project to the list
+        return [...prev, comparison.selected_project];
       }
     });
-    // console.log(selectedProjects);
   };
 
   const comparisonsPerPage = 5;
@@ -88,9 +93,7 @@ export default function ProjectComparisonTable({
   const handleSendSelected = () => {
     if (selectedProjects.length === 0) return;
 
-    const projectNames = selectedProjects
-      .map((project: any) => `${project.selected_project}`)
-      .join(", ");
+    const projectNames = finalArray.join(", ");
 
     const message = `Please analyze these project comparisons: ${projectNames}`;
     onSendMessage(message, selectedProjects);
@@ -98,10 +101,15 @@ export default function ProjectComparisonTable({
   };
   return (
     <div className="container mx-auto p-4 bg-gray-900 text-gray-100 m-5 w-[950px]">
-      <div className="flex justify-between">
-        <h1 className="text-2xl font-bold mb-4">Project Comparisons</h1>{" "}
+      <div className="flex justify-between items-center">
+        <h1 className="text-2xl font-bold mb-4 ">Project Comparisons</h1>{" "}
         {selectedProjects.length > 0 && (
-          <button onClick={handleSendSelected}>Click</button>
+          <button
+            className="p-3 border m-2 rounded-lg font-bold bg-blue-500"
+            onClick={handleSendSelected}
+          >
+            Send For Comparison
+          </button>
         )}
         <DownloadCSV jsonData={projectsCompared} />
       </div>
@@ -148,10 +156,8 @@ export default function ProjectComparisonTable({
                 <td className="px-4 py-2">
                   <input
                     type="checkbox"
-                    checked={selectedProjects.some(
-                      (project: any) =>
-                        project.project1 === comparison.project1 &&
-                        project.project2 === comparison.project2
+                    checked={selectedProjects.includes(
+                      comparison.selected_project
                     )}
                     onChange={() => handleCheckboxChange(comparison)}
                     className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"

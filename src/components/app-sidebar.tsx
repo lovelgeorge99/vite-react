@@ -15,11 +15,29 @@ import {
 import { apiClient } from "@/lib/api";
 import { NavLink, useLocation } from "react-router";
 import { type UUID } from "@elizaos/core";
-import { User } from "lucide-react";
+import { Cog, User } from "lucide-react";
 import ConnectionStatus from "./connection-status";
+import { useState } from "react";
+import ConfigsModal from "./ConfigsModal";
 
 export function AppSidebar() {
   const location = useLocation();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    console.log("in here");
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    console.log("Ckes");
+    setIsModalOpen(false);
+    console.log(isModalOpen);
+  };
+
+  const handleSubmitAllocation = (allocation: Record<string, number>) => {
+    console.log("Budget allocation submitted:", allocation);
+  };
   const query = useQuery({
     queryKey: ["agents"],
     queryFn: () => apiClient.getAgents(),
@@ -74,6 +92,7 @@ export function AppSidebar() {
                           <User />
                           <span>{agent.name}</span>
                         </SidebarMenuButton>
+                        {/* <ScoreSliders />{" "} */}
                       </NavLink>
                     </SidebarMenuItem>
                   ))}
@@ -91,7 +110,19 @@ export function AppSidebar() {
               target="_blank"
             ></NavLink>
           </SidebarMenuItem>
-          <SidebarMenuItem></SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton>
+              <div className="flex gap-2" onClick={handleOpenModal}>
+                {" "}
+                <Cog /> Settings
+              </div>
+            </SidebarMenuButton>
+            <ConfigsModal
+              isOpen={isModalOpen}
+              onClose={handleCloseModal}
+              onSubmit={handleSubmitAllocation}
+            />
+          </SidebarMenuItem>
           <ConnectionStatus />
         </SidebarMenu>
       </SidebarFooter>
