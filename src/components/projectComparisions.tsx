@@ -38,10 +38,10 @@ export default function ProjectComparisonTable({
   console.log(projectsCompared);
 
   const finalArray = projectsCompared.map((comparison: any) => {
-    if (selectedProjects.includes(comparison.selected_project)) {
-      return comparison.selected_project;
-    } else {
+    if (selectedProjects.includes(comparison.not_selected_project)) {
       return comparison.not_selected_project;
+    } else {
+      return comparison.selected_project;
     }
   });
 
@@ -50,16 +50,16 @@ export default function ProjectComparisonTable({
   const handleCheckboxChange = (comparison: any) => {
     // console.log(selectedProjects);
     setSelectedProjects((prev: any) => {
-      const isSelected = prev.includes(comparison.selected_project);
+      const isSelected = prev.includes(comparison.not_selected_project);
 
       if (isSelected) {
         // Remove the selected project if it is already in the list
         return prev.filter(
-          (project: any) => project !== comparison.selected_project
+          (project: any) => project !== comparison.not_selected_project
         );
       } else {
         // Add the selected project to the list
-        return [...prev, comparison.selected_project];
+        return [...prev, comparison.not_selected_project];
       }
     });
   };
@@ -103,14 +103,6 @@ export default function ProjectComparisonTable({
     <div className="container mx-auto p-4 bg-gray-900 text-gray-100 m-5 w-[950px]">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold mb-4 ">Project Comparisons</h1>{" "}
-        {selectedProjects.length > 0 && (
-          <button
-            className="p-3 border m-2 rounded-lg font-bold bg-blue-500"
-            onClick={handleSendSelected}
-          >
-            Send For Comparison
-          </button>
-        )}
         <DownloadCSV jsonData={projectsCompared} />
       </div>
 
@@ -124,7 +116,7 @@ export default function ProjectComparisonTable({
               <th className="px-4 py-2 text-left">Selected Project</th>
               <th className="px-4 py-2 text-left">Confidence</th>
               <th className="px-4 py-2 text-left">Actions</th>
-              <th className="px-4 py-2 text-left">Agree with result?</th>
+              <th className="px-4 py-2 text-left">Disagree?</th>
             </tr>
           </thead>
           <tbody>
@@ -157,7 +149,7 @@ export default function ProjectComparisonTable({
                   <input
                     type="checkbox"
                     checked={selectedProjects.includes(
-                      comparison.selected_project
+                      comparison.not_selected_project
                     )}
                     onChange={() => handleCheckboxChange(comparison)}
                     className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
@@ -180,6 +172,14 @@ export default function ProjectComparisonTable({
         <span>
           Page {currentPage} of {totalPages}
         </span>
+        {selectedProjects.length > 0 && (
+          <button
+            className="p-3 border m-2 rounded-lg font-bold bg-[#A8008C]"
+            onClick={handleSendSelected}
+          >
+            Send For Comparison
+          </button>
+        )}
         <button
           onClick={() =>
             setCurrentPage((prev) => Math.min(prev + 1, totalPages))
@@ -218,25 +218,25 @@ export default function ProjectComparisonTable({
                 <div>
                   <p className="font-semibold">Marketing:</p>
                   <p className={getMetricColor(selectedComparison.marketing)}>
-                    {selectedComparison.marketing.toFixed(1)}
+                    {selectedComparison.marketing}
                   </p>
                 </div>
                 <div>
                   <p className="font-semibold">Product:</p>
                   <p className={getMetricColor(selectedComparison.product)}>
-                    {selectedComparison.product.toFixed(1)}
+                    {selectedComparison.product}
                   </p>
                 </div>
                 <div>
                   <p className="font-semibold">Team:</p>
                   <p className={getMetricColor(selectedComparison.team)}>
-                    {selectedComparison.team.toFixed(1)}
+                    {selectedComparison.team}
                   </p>
                 </div>
                 <div>
                   <p className="font-semibold">Finance:</p>
                   <p className={getMetricColor(selectedComparison.finance)}>
-                    {selectedComparison.finance.toFixed(1)}
+                    {selectedComparison.finance}
                   </p>
                 </div>
               </div>

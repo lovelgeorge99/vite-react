@@ -8,7 +8,7 @@ import { ChatInput } from "@/components/ui/chat/chat-input";
 import { ChatMessageList } from "@/components/ui/chat/chat-message-list";
 import { useTransition, animated } from "@react-spring/web";
 import { Paperclip, Send, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Content, UUID } from "@elizaos/core";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api";
@@ -34,6 +34,17 @@ interface ExtraContentFields {
 
 type ContentWithUser = Content & ExtraContentFields;
 
+const prompts = [
+  "Compare all projects in brackets?",
+  "Compare all Citizen Wallet with Akarun?",
+  "Give the details about x23.ai projects?",
+  "Give the list of the projects who have launched their tokens?",
+  "Which projects have the highest funding?",
+  "List all projects that support multi-chain transactions?",
+  "What are the latest updates from projects in Q1 2025?",
+  "Which projects are similar to Gitcoin?",
+];
+
 export default function Page({ agentId }: { agentId: UUID }) {
   const { toast } = useToast();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -48,6 +59,10 @@ export default function Page({ agentId }: { agentId: UUID }) {
   const { scores } = useScores();
   const initialScoresRef = useRef(scores);
   const [hasSentData, setHasSentData] = useState(false);
+
+  const randomPrompts = useMemo(() => {
+    return prompts.sort(() => 0.5 - Math.random()).slice(0, 4);
+  }, []);
 
   useEffect(() => {
     if (
@@ -113,18 +128,6 @@ export default function Page({ agentId }: { agentId: UUID }) {
     });
   };
 
-  // const handleSendConfigs = () => {
-  //   sendMessageMutation.mutate({
-  //     message: `Can you  change the configs
-  //     Marketing:${scores.marketing}
-  //     Product:${scores.product}
-  //     Team:${scores.teamAssessment}
-  //     Financial:${scores.financial}
-  //     Also do not repond with any text to me
-  //     `,
-  //   });
-  // };
-
   const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input) return;
@@ -167,6 +170,31 @@ export default function Page({ agentId }: { agentId: UUID }) {
     setSelectedFile(null);
     setInput("");
     formRef.current?.reset();
+  };
+
+  const handleSendPrompts = (message: string) => {
+    const newMessages = [
+      {
+        text: message,
+        user: "user",
+        createdAt: Date.now(),
+      },
+      {
+        text: message,
+        user: "system",
+        isLoading: true,
+        createdAt: Date.now(),
+      },
+    ];
+    queryClient.setQueryData(
+      ["messages", agentId],
+      (old: ContentWithUser[] = []) => [...old, ...newMessages]
+    );
+
+    sendMessageMutation.mutate({
+      message: message,
+      selectedFile: selectedFile ? selectedFile : null,
+    });
   };
 
   useEffect(() => {
@@ -226,6 +254,26 @@ export default function Page({ agentId }: { agentId: UUID }) {
     <div className="flex flex-col w-full h-[calc(100dvh)] p-4 ">
       <div className="flex-1 overflow-y-auto">
         <ChatMessageList ref={messagesContainerRef}>
+          <div className="flex justify-center items-end  h-screen">
+            <div className="flex flex-col gap-4 text-center justify-center items-center text-[#FFF]">
+              <h1 className="text-2xl s font-bold  ">Hello, I’m GrantWize</h1>
+              <div className=" w-[429px] text-base leading-6">
+                Upload your CSV file containing your grant application answers,
+                and here’s what I can do for you
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {randomPrompts.map((prompt) => (
+                  <div
+                    key={prompt}
+                    className="py-[13px] px-[10px] border rounded-lg cursor-pointer text-sm font-medium"
+                    onClick={() => handleSendPrompts(prompt)}
+                  >
+                    {prompt}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
           {transitions((styles, message: any) => {
             const variant = getMessageVariant(message?.user);
             return (
@@ -318,6 +366,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
           })}
         </ChatMessageList>
       </div>
+
       <div className="px-4 pb-4">
         <form
           ref={formRef}
