@@ -95,7 +95,7 @@ export default function ProjectComparisonTable({
 
     const projectNames = finalArray.join(", ");
 
-    const message = `Please analyze these project comparisons: ${projectNames}`;
+    const message = `Please analyze these project comparisons and call speifica comparison action: ${projectNames}`;
     onSendMessage(message, selectedProjects);
     setSelectedProjects([]); // Clear selection after sending
   };
@@ -177,7 +177,7 @@ export default function ProjectComparisonTable({
             className="p-3 border m-2 rounded-lg font-bold bg-[#A8008C]"
             onClick={handleSendSelected}
           >
-            Send For Comparison
+            Move to Next Round
           </button>
         )}
         <button

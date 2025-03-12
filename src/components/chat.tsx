@@ -36,13 +36,12 @@ type ContentWithUser = Content & ExtraContentFields;
 
 const prompts = [
   "Compare all projects in brackets?",
-  "Compare all Citizen Wallet with Akarun?",
-  "Give the details about x23.ai projects?",
-  "Give the list of the projects who have launched their tokens?",
-  "Which projects have the highest funding?",
-  "List all projects that support multi-chain transactions?",
-  "What are the latest updates from projects in Q1 2025?",
-  "Which projects are similar to Gitcoin?",
+  "Compare OREWA with GoGoCash?",
+  "Give the details about Tapshot projects",
+  "Show me all projects with launched tokens",
+  "Give me the projects how  are  in live stage and have launched  thier tokens",
+  "Give me the projects whose team size is grater than 5 and have lauched thier tokens",
+  "Give me the projects whose monthly burn rate is greater than 10000",
 ];
 
 export default function Page({ agentId }: { agentId: UUID }) {

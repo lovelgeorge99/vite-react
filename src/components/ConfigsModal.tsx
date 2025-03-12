@@ -22,6 +22,7 @@ export default function ConfigsModal({ isOpen, onClose }: ConfigsModalProps) {
   const [error, setError] = useState<string | null>(null);
   const [selectedTab, setseletedTab] = useState("settings");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [fileChanged, setFileChagned] = useState<boolean>(false);
   const handleInputChange = (category: ConfigsCategory, value: string) => {
     const newValue = { ...configValues, [category]: value };
 
@@ -51,7 +52,7 @@ export default function ConfigsModal({ isOpen, onClose }: ConfigsModalProps) {
       selectedFile?: File | null;
     }) => apiClient.sendMessage(agentId, message, selectedFile),
     onSuccess: () => {
-      console.log("Updated");
+      onClose();
     },
     onError: (e) => {
       toast({
@@ -65,6 +66,7 @@ export default function ConfigsModal({ isOpen, onClose }: ConfigsModalProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      setFileChagned(true);
       setSelectedFile(file);
     }
   };
@@ -87,20 +89,25 @@ export default function ConfigsModal({ isOpen, onClose }: ConfigsModalProps) {
     if (total !== 100) {
       setError("Total allocation must equal 100%");
     } else {
-      if (selectedFile) {
+      if (fileChanged) {
         sendMessageMutation.mutate({
           message: "Can you read for this csv file",
           selectedFile: selectedFile ? selectedFile : null,
         });
 
-        setSelectedFile(null);
+        setFileChagned(false);
+        // setSelectedFile(null);
       } else {
         sendMessageMutation.mutate({
-          message: "how many projects are there",
+          message: `Update the configs for evaluating  the projects as follows but dont call the compare projects action:
+                    \n
+                  Marketing;${configValues.marketing}
+                  Financial;${configValues.financial}
+                  Team;${configValues.team}
+                  Product;${configValues.product}
+                  `,
         });
         setError(null);
-        // onSubmit(numericAllocation);
-        onClose();
       }
     }
   };
@@ -252,7 +259,7 @@ export default function ConfigsModal({ isOpen, onClose }: ConfigsModalProps) {
             onClick={handleSubmit}
             disabled={sendMessageMutation?.isPending}
           >
-            Save
+            {sendMessageMutation?.isPending ? "Saving" : "Save"}
           </button>
         </div>
       </div>

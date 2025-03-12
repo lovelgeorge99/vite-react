@@ -128,9 +128,8 @@ export function AppSidebar() {
             ></NavLink>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton>
+            <SidebarMenuButton className="p-2 mb-2">
               <div className="flex gap-2 items-center">
-                {" "}
                 <svg
                   width="18"
                   height="18"
@@ -150,12 +149,11 @@ export function AppSidebar() {
               </div>
             </SidebarMenuButton>
 
-            <SidebarMenuButton onClick={handleOpenModal}>
+            <SidebarMenuButton onClick={handleOpenModal} className="py-2">
               <div
-                className="flex gap-2 items-center"
+                className="flex  gap-2 items-center "
                 onClick={handleOpenModal}
               >
-                {" "}
                 <svg
                   width="25"
                   height="25"
